@@ -35,3 +35,31 @@ let unique list =
 (* Function to check if a sudoku is valid *)
 let check_valid sudoku = 
   unique sudoku && unique (get_columns sudoku) && unique (get_subgrid sudoku)
+
+(* replace given point (col, row) with given value in given sudoku *)
+let replace (x,y) value sudoku =
+  match sudoku with
+  | [[a; b; c; d];
+     [e; f; g; h];
+     [i; j; k; l];
+     [m; n; o; p]] ->
+    [[if (x,y) = (0,0) then value else a; if (x,y) = (1,0) then value else b; if (x,y) = (2,0) then value else c; if (x,y) = (3,0) then value else d];
+     [if (x,y) = (0,1) then value else e; if (x,y) = (1,1) then value else f; if (x,y) = (2,1) then value else g; if (x,y) = (3,1) then value else h];
+     [if (x,y) = (0,2) then value else i; if (x,y) = (1,2) then value else j; if (x,y) = (2,2) then value else k; if (x,y) = (3,2) then value else l];
+     [if (x,y) = (0,3) then value else m; if (x,y) = (1,3) then value else n; if (x,y) = (2,3) then value else o; if (x,y) = (3,3) then value else p];]
+  | _ -> []
+  (* if - then syntax was suggested by ChatGPT *)
+
+let display_sudoku sudoku = 
+  match sudoku with
+  | [[a; b; c; d];
+     [e; f; g; h];
+     [i; j; k; l];
+     [m; n; o; p]]
+    -> Printf.printf "[[%i,%i,%i,%i]\n[%i,%i,%i,%i]\n[%i,%i,%i,%i]\n[%i,%i,%i,%i]]"a b c d e f g h i j k l m n o p
+  | _ -> ()
+
+let () =
+  display_sudoku (replace (0,1) 1 sudoku);
+  let is_valid = check_valid sudoku in
+  Printf.printf "\n%b" is_valid
