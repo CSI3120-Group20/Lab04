@@ -6,16 +6,6 @@ let sudoku = [
   [0; 2; 0; 0];
 ]
 
-(* Returns sudoku as lists of numbers in each row
-let get_rows sudoku =
-  match sudoku with
-  | [[a; b; c; d];
-     [e; f; g; h];
-     [i; j; k; l];
-     [m; n; o; p]]
-    -> ([a,b,c,d], [e,f,g,h], [i,j,k,l], [m,n,o,p])
-  | _ -> ([],[],[],[]) *)
-
 (* Returns sudoku as lists of numbers in each column *)
 let get_columns sudoku =
   match sudoku with
@@ -48,6 +38,7 @@ let unique list =
     | [w; x; y; z] -> w <> x && w <> y && w <> z && x <> y && x <> z && y <> z
     | [x; y; z] -> x <> y && x <> z && y <> z
     | [y; z] -> y <> z
+    | [_] -> true
     | [] -> true
     | _ -> false
 
@@ -59,20 +50,21 @@ let check_valid sudoku =
   List.iter (fun list -> if not (unique list) then flag := false) (get_subgrids sudoku);
   !flag
 
-(* replace given point (col, row) with given value in given sudoku *)
-let replace (x,y) value sudoku =
+(* replace given a position with given value in given sudoku *)
+let replace pos value sudoku =
   match sudoku with
   | [[a; b; c; d];
      [e; f; g; h];
      [i; j; k; l];
      [m; n; o; p]] ->
-    [[if (x,y) = (0,0) then value else a; if (x,y) = (1,0) then value else b; if (x,y) = (2,0) then value else c; if (x,y) = (3,0) then value else d];
-     [if (x,y) = (0,1) then value else e; if (x,y) = (1,1) then value else f; if (x,y) = (2,1) then value else g; if (x,y) = (3,1) then value else h];
-     [if (x,y) = (0,2) then value else i; if (x,y) = (1,2) then value else j; if (x,y) = (2,2) then value else k; if (x,y) = (3,2) then value else l];
-     [if (x,y) = (0,3) then value else m; if (x,y) = (1,3) then value else n; if (x,y) = (2,3) then value else o; if (x,y) = (3,3) then value else p];]
+    [[if pos = 0 then value else a; if pos = 1 then value else b; if pos = 2 then value else c; if pos = 3 then value else d];
+     [if pos = 4 then value else e; if pos = 5 then value else f; if pos = 6 then value else g; if pos = 7 then value else h];
+     [if pos = 8 then value else i; if pos = 9 then value else j; if pos = 10 then value else k; if pos = 11 then value else l];
+     [if pos = 12 then value else m; if pos = 13 then value else n; if pos = 14 then value else o; if pos = 15 then value else p];]
   | _ -> []
   (* if - then syntax was suggested by ChatGPT *)
 
+(* Print the sudoku to the command line *)
 let display_sudoku sudoku = 
   match sudoku with
   | [[a; b; c; d];
@@ -82,6 +74,7 @@ let display_sudoku sudoku =
     -> Printf.printf "[[%i,%i,%i,%i]\n[%i,%i,%i,%i]\n[%i,%i,%i,%i]\n[%i,%i,%i,%i]]"a b c d e f g h i j k l m n o p
   | _ -> ()
 
+(* Main *)
 let () =
   display_sudoku (replace (0,1) 1 sudoku);
   let is_valid = check_valid sudoku in
