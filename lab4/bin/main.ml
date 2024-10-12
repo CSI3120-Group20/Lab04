@@ -74,8 +74,38 @@ let display_sudoku sudoku =
     -> Printf.printf "[[%i,%i,%i,%i]\n[%i,%i,%i,%i]\n[%i,%i,%i,%i]\n[%i,%i,%i,%i]]"a b c d e f g h i j k l m n o p
   | _ -> ()
 
-(* Main *)
+(* Backtracking algorithm *)
+let rec solve sudoku start_position: int list list =
+  match sudoku with
+  | [[a; b; c; d];
+     [e; f; g; h];
+     [i; j; k; l];
+     [m; n; o; p]] ->
+      let solved_sudoku = ref [] in
+      let impossible_position = ref false in
+      (* Iterate through every cell in the sudoku *)
+      List.iter (fun cell ->
+        (* Check if the item at the given position has no value (=0) *)
+        let (value, pos) = cell in
+        if value = 0 then (  
+          print_int pos;
+          print_endline "\n";
+          (* Try putting test values 1 through 4 *)
+          let test_value = ref 1 in while !test_value <= 4 do
+            let test_sudoku = (replace pos !test_value sudoku) in
+            if check_valid test_sudoku then (
+              solved_sudoku := solve test_sudoku;
+              print_endline "\n*********************************************************\n";
+              test_value := 100 (* Break loop *)
+            );
+            test_value:=!test_value+1;
+          done;
+          impossible_position := true; (* Break loop *)
+        )
+      ) [(a,0);(b,1);(c,2);(d,3);(e,4);(f,5);(g,6);(h,7);(i,8);(j,9);(k,10);(l,11);(m,12);(n,13);(o,14);(p,15)];
+      if !impossible_position then [] else !solved_sudoku
+  | _ -> []
+
 let () =
-  display_sudoku (replace (0,1) 1 sudoku);
-  let is_valid = check_valid sudoku in
-  Printf.printf "\n%b" is_valid
+  print_endline "\nSolved:\n";
+  display_sudoku (solve sudoku 0)
