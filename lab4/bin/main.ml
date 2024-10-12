@@ -6,6 +6,16 @@ let sudoku = [
   [0; 2; 0; 0];
 ]
 
+(* Returns sudoku as lists of numbers in each row
+let get_rows sudoku =
+  match sudoku with
+  | [[a; b; c; d];
+     [e; f; g; h];
+     [i; j; k; l];
+     [m; n; o; p]]
+    -> ([a,b,c,d], [e,f,g,h], [i,j,k,l], [m,n,o,p])
+  | _ -> ([],[],[],[]) *)
+
 (* Returns sudoku as lists of numbers in each column *)
 let get_columns sudoku =
   match sudoku with
@@ -13,28 +23,41 @@ let get_columns sudoku =
      [e; f; g; h];
      [i; j; k; l];
      [m; n; o; p]]
-    -> [[a,e,i,m], [b,f,j,n], [c,g,k,o], [d,h,l,p]]
+    -> [[a;e;i;m]; [b;f;j;n]; [c;g;k;o]; [d;h;l;p]]
   | _ -> []
 
-(* Returns sudoku as lists of numbers in each subgrid *)
-let get_subgrid sudoku = 
+(* Returns sudoku as a tuple of numbers in each subgrid *)
+let get_subgrids sudoku = 
   match sudoku with
   | [[a; b; c; d];
      [e; f; g; h];
      [i; j; k; l];
      [m; n; o; p]]
-    -> [[a,b,e,f], [c,d,g,h], [i,j,m,n], [k,l,o,p]]
+    -> [[a;b;e;f]; [c;d;g;h]; [i;j;m;n]; [k;l;o;p]]
   | _ -> []
 
-(* Checks if the elements in a list of length 4 are unique *)
+(* Auxiliary function that filters out 0s in a list *)
+let filter_zeros list = 
+  let return = ref [] in
+  List.iter (fun i -> if i <> 0 then return := [i] @ !return) list;
+  !return
+
+(* Checks if the elements in a list of length <4 are unique *)
 let unique list =
-  match list with
+  match filter_zeros list with
     | [w; x; y; z] -> w <> x && w <> y && w <> z && x <> y && x <> z && y <> z
+    | [x; y; z] -> x <> y && x <> z && y <> z
+    | [y; z] -> y <> z
+    | [] -> true
     | _ -> false
 
 (* Function to check if a sudoku is valid *)
 let check_valid sudoku = 
-  unique sudoku && unique (get_columns sudoku) && unique (get_subgrid sudoku)
+  let flag = ref true in
+  List.iter (fun list -> if not (unique list) then flag := false) sudoku;
+  List.iter (fun list -> if not (unique list) then flag := false) (get_columns sudoku);
+  List.iter (fun list -> if not (unique list) then flag := false) (get_subgrids sudoku);
+  !flag
 
 (* replace given point (col, row) with given value in given sudoku *)
 let replace (x,y) value sudoku =
