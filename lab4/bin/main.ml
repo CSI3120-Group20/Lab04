@@ -1,4 +1,5 @@
 (* Throughout the programming of this lab, syntax errors have been corrected by ChatGPT *)
+
 (* no solution *)
 let _sudoku_puzzle_1 = [
   [1; 0; 0; 4];
@@ -7,6 +8,7 @@ let _sudoku_puzzle_1 = [
   [0; 2; 0; 0];
 ]
 
+(* There is a solution *)
 let _sudoku_puzzle_2 = [
   [0; 2; 0; 4];
   [0; 0; 1; 0];
@@ -14,6 +16,7 @@ let _sudoku_puzzle_2 = [
   [4; 0; 0; 0];
 ]
 
+(* no solution *)
 let _sudoku_puzzle_3 = [
   [0; 0; 0; 2];
   [0; 3; 4; 0];
@@ -58,7 +61,7 @@ let unique list =
     | [] -> true
     | _ -> false
 
-(* Function to check if a sudoku is valid after putting a new value to the sudoku *)
+(* Function to check if a sudoku is valid *)
 let is_valid sudoku = 
   let flag = ref true in
   List.iter (fun list -> if not (unique list) then flag := false) sudoku;
